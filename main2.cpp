@@ -1,52 +1,49 @@
 #include <iostream>
+#include <vector>
 #include <string>
+#include <sstream>
+#include <windows.h>
+
 
 using namespace std;
-
-int main() {
-    string text;
-    cout << "Введите текст: ";
-    // Читаем всю строку целиком, а не до первого пробела
-    getline(cin, text); 
-
-    string word = "";     // Сюда по буквам собираем текущее слово
-    int lineLen = 0;      // Счетчик: сколько символов уже напечатано в текущей строке
-
-    // Цикл идет до <=, чтобы обработать последнее слово после последнего символа
-    for (int i = 0; i <= text.length(); i++) {
-        
-        // Если не конец строки и не пробел — копим буквы в слово
-        // Важно: используем ' ', так как сравниваем символ, а не строку
-        if (i < text.length() && text[i] != ' ') {
-            word += text[i];
-        } 
-        // Если встретили пробел или текст закончился
-        else if (word.length() > 0) { 
-            int space = 0;
-            // Если в строке уже что-то есть, нам понадобится пробел перед словом
-            if (lineLen > 0) space = 1; 
-
-            // ГЛАВНАЯ ПРОВЕРКА: влезет ли (текущая строка + пробел + слово) в 50
-            if (lineLen + space + (int)word.length() > 50) {
-                cout << endl;    // Не влезает — прыгаем на новую строку
-                lineLen = 0;     // На новой строке пока 0 символов
-                space = 0;       // Пробел в начале строки не нужен
-            }
-
-            // Печатаем пробел, если он нужен, и учитываем его в длине строки
-            if (space == 1) {
-                cout << " ";
-                lineLen++;
-            }
-
-            // Печатаем само слово и добавляем его длину к счетчику строки
-            cout << word;
-            lineLen += word.length();
-            
-            // Очищаем «хранилище» для слова, чтобы собирать следующее
-            word = ""; 
+int commonPrefixLength(string s1, string s2) {
+    int len = 0;
+    while (len < s1.length() && len < s2.length()) {
+        if (s1[len] == s2[len]) {
+            len++;
+        } else {
+            break;
         }
     }
+
+    return len;
+}
+int main() {
+
+    SetConsoleOutputCP(1251);
+    SetConsoleCP(1251);
+
+    string line;
+    getline(cin,line);
+    stringstream ss(line);
+    string word;
+    vector<string> words;
+    while (ss >> word) {
+        words.push_back(word);
+    }
+
+    int maxPrefix = 0;
+
+
+    for (size_t i = 0; i < words.size(); i++) {
+        for (size_t j = i + 1; j < words.size(); j++) {
+            int currentPrefix = commonPrefixLength(words[i], words[j]);
+            if (currentPrefix > maxPrefix) {
+                maxPrefix = currentPrefix;
+            }
+        }
+    }
+    cout << "Результат: " << maxPrefix << endl;
 
     return 0;
 }
