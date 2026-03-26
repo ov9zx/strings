@@ -1,42 +1,35 @@
 #include <iostream>
-#include <vector>
 #include <string>
+#include <sstream>
+#include <windows.h>
 
 using namespace std;
 
-string getUniquePrefix(int index, const vector<string>& words) {
-    string word = words[index];
-
-    for (size_t len = 1; len <= word.length(); len++) {
-        string prefix = word.substr(0, len);
-        bool unique = true;
-
-        for (size_t j = 0; j < words.size(); j++) {
-            if (index != j && words[j].find(prefix) == 0) {
-                unique = false;
-                break;
-            }
-        }
-        if (unique) return prefix;
-    }
-    return word;
-}
-
 int main() {
-    int n;
-    cout << "Сколько слов? ";
-    cin >> n;
+    SetConsoleOutputCP(1251);
+    SetConsoleCP(1251);
 
-    vector<string> words(n);
-    cout << "Вводи слова:";
-    for (int i = 0; i < n; i++) {
-        cin >> words[i];
-    }
+    string text;
+    cout << "Введите текст: ";
+    getline(cin, text);
 
-    cout << "Результат:"<<endl;
-    for (int i = 0; i < n; i++) {
-        string prefix = getUniquePrefix(i, words);
-        cout << words[i] << " -> " << prefix.length() << " букв(ы) [" << prefix << "]\n";
+    stringstream ss(text);
+    string word;
+    int lineLen = 0;
+
+
+    while (ss >> word) {
+
+        if (lineLen + word.length() > 50) {
+            cout << endl;
+            lineLen = 0;
+        }
+
+
+        cout << word << " ";
+
+
+        lineLen += word.length() + 1;
     }
 
     return 0;
